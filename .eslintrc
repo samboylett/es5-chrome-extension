@@ -1,0 +1,13 @@
+{
+    "extends": "@netsells",
+    "parserOptions": {
+        "ecmaVersion": 2017
+    },
+    "rules": {
+        "require-jsdoc-except/require-jsdoc": false,
+        "no-alert": "off"
+    },
+    "env": {
+        "webextensions": true
+    }
+}
