@@ -63,15 +63,23 @@
                 }
 
                 request.getContent(body => {
+                    const parsedRequest = {
+                        href: url.href,
+                        body,
+                        key: [url.href, new Date().getTime()].join('-'),
+                        error: getES5Error(body),
+                    };
+
                     this.requests = [
                         ...this.requests,
-                        {
-                            href: url.href,
-                            body,
-                            key: [url.href, new Date().getTime()].join('-'),
-                            error: getES5Error(body),
-                        },
+                        parsedRequest,
                     ];
+
+                    if (parsedRequest.error) {
+                        chrome.devtools.inspectedWindow.eval(`
+                            console.error('ES5 Analyser found an issue with ${ url.pathname }');
+                        `);
+                    }
                 });
             },
         },
