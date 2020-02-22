@@ -19,7 +19,7 @@
     "@netsells/eslint-config": "^1.8.0",
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^5.0.2",
-    "crx-webpack-plugin": "^0.1.5",
+    "crx-webpack-plugin": "git+ssh://git@github.com:UzielSilva/crx-webpack-plugin.git#6f178eaf20148d1b84747e60c7388e871ea815fd",
     "css-loader": "^2.1.1",
     "eslint": "^4.10.0",
     "eslint-loader": "^2.1.2",

@@ -68,12 +68,11 @@ module.exports = {
             filename: `${ buildName }.zip`,
         }),
 
-        // Doesn't work with node 10, easy fix we can PR in when we need it..
-        // new Crx({
-        //     keyFile: 'key.pem',
-        //     contentPath: 'build',
-        //     outputPath: 'dist',
-        //     name: buildName,
-        // }),
+        new Crx({
+            keyFile: 'key.pem',
+            contentPath: 'build',
+            outputPath: 'dist',
+            name: buildName,
+        }),
     ],
 };
