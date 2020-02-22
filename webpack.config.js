@@ -7,7 +7,8 @@ const ZipPlugin = require('zip-webpack-plugin');
 const moment = require('moment');
 const { URL } = require('url');
 
-const buildName = moment().format('YYYY-MM-DD_HH:mm');
+const date = moment().format('YYYY-MM-DD_HH:mm');
+const buildName = `es5-extension-${ date }`;
 
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
@@ -43,17 +44,16 @@ module.exports = {
         ],
     },
     plugins: [
-        new CopyPlugin([
-            { from: './src/icon.png', to: './icon.png' },
-        ]),
-
-        new CopyPlugin([
-            { from: './src/devtools.html', to: './devtools.html' },
-        ]),
-
-        new CopyPlugin([
-            { from: './src/panel.html', to: './panel.html' },
-        ]),
+        ...[
+            'icon.png',
+            'devtools.html',
+            'panel.html',
+        ].map(f => new CopyPlugin([
+            {
+                from: `./src/${ f }`,
+                to: `./${ f }`,
+            },
+        ])),
 
         new GenerateJsonPlugin(
             './manifest.json',
