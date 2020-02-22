@@ -16,6 +16,7 @@ module.exports = {
     entry: {
         devtools: './src/devtools.js',
         panel: './src/panel.js',
+        background: './src/background.js',
     },
     output: {
         filename: './[name].js',

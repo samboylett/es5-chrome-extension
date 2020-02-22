@@ -30,6 +30,8 @@
 <script>
     import RequestError from './RequestError.vue';
     import getES5Error from '../get-es5-error';
+    import { devtoolsPort } from '../ports';
+    import { tabUpdated } from '../messages';
 
     export default {
         name: 'panel',
@@ -52,9 +54,34 @@
 
         mounted() {
             chrome.devtools.network.onRequestFinished.addListener(this.handleRequestFinished);
+            devtoolsPort.onMessage.addListener(this.handleMessage);
         },
 
         methods: {
+            async getTab() {
+                return new Promise(r => {
+                    chrome.tabs.get(chrome.devtools.inspectedWindow.tabId, r);
+                });
+            },
+
+            handleMessage({ type, data }) {
+                const handler = {
+                    [tabUpdated]: this.handleTabUpdated,
+                }[type];
+
+                if (handler) {
+                    handler(data);
+                }
+            },
+
+            handleTabUpdated({ tabId }) {
+                if (tabId !== chrome.devtools.inspectedWindow.tabId) {
+                    return;
+                }
+
+                this.analyseInspectedWindow();
+            },
+
             handleRequestFinished(request) {
                 const url = new URL(request.request.url);
 
@@ -63,24 +90,50 @@
                 }
 
                 request.getContent(body => {
-                    const parsedRequest = {
+                    this.analyseScript({
                         href: url.href,
                         body,
-                        key: [url.href, new Date().getTime()].join('-'),
-                        error: getES5Error(body),
-                    };
-
-                    this.requests = [
-                        ...this.requests,
-                        parsedRequest,
-                    ];
-
-                    if (parsedRequest.error) {
-                        chrome.devtools.inspectedWindow.eval(`
-                            console.error('ES5 Analyser found an issue with ${ url.pathname }');
-                        `);
-                    }
+                        pathname: url.pathname,
+                    });
                 });
+            },
+
+            async analyseInspectedWindow() {
+                const tab = await this.getTab();
+
+                chrome.devtools.inspectedWindow.eval(`
+                    Array.from(document.querySelectorAll('script[type="text/javascript"]'))
+                        .map(s => s.innerHTML)
+                        .filter(t => t);
+                `, result => {
+                    result.forEach(script => {
+                        this.analyseScript({
+                            href: tab.url,
+                            body: script,
+                            pathname: 'Content script',
+                        });
+                    });
+                });
+            },
+
+            async analyseScript({ href, body, pathname }) {
+                const parsedRequest = {
+                    href,
+                    body,
+                    key: [href, new Date().getTime()].join('-'),
+                    error: getES5Error(body),
+                };
+
+                this.requests = [
+                    ...this.requests,
+                    parsedRequest,
+                ];
+
+                if (parsedRequest.error) {
+                    chrome.devtools.inspectedWindow.eval(`
+                        console.error('ES5 Analyser found an issue with ${ pathname }');
+                    `);
+                }
             },
         },
     };

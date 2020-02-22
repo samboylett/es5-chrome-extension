@@ -7,5 +7,4 @@ jobs:
         - yarn run lint
     - stage: build
       script:
-        - cp .env.example .env
         - NODE_ENV=production yarn run build
