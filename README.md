@@ -1,6 +1,6 @@
 # ES5 Chrome Extension
 
-A devtools extension which will capture requests and parse them using an ES5 parser.
+A devtools extension which will capture requests and parse them using an [ES5 parser](https://github.com/acornjs/acorn).
 
 Errors found will be shown in the devtools panel.
 
