@@ -5,7 +5,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint && yarn build"
+      "pre-commit": "yarn lint && yarn build && git add build"
     }
   },
   "targets": {
