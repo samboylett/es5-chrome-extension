@@ -45,7 +45,7 @@
                 return {
                     before: this.line.slice(this.codeStart, this.request.error.loc.column),
                     char: this.line[this.request.error.loc.column],
-                    end: this.line.slice(this.request.error.loc.column, this.codeEnd),
+                    end: this.line.slice(this.request.error.loc.column + 1, this.codeEnd),
                 };
             },
         },
