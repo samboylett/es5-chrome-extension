@@ -25,7 +25,7 @@
     "eslint-loader": "^2.1.2",
     "generate-json-webpack-plugin": "^0.3.1",
     "husky": "^4.2.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "vue-loader": "^15.7.0",
